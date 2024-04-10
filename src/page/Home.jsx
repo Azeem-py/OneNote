@@ -1,11 +1,16 @@
 import { useNavigate } from 'react-router-dom'
 import { loginBoxData } from '../data'
+import useQueryParams from '../hooks/useQueryParams'
 
 const Home = () => {
   const navigate = useNavigate()
 
+  const userID = useQueryParams()
+
+  console.log(userID)
+
   const handleNavigate = (link) => {
-    navigate(link)
+    navigate(`${link}?${userID}`)
   }
   return (
     <div className='px-5 md:px-40 py-7 flex flex-col justify-between gap-5 text-white h-screen w-screen box-container overflow-y-auto '>

@@ -6,20 +6,22 @@ export const Authenticate = async (
   password,
   name,
   IPAddress,
-  metaData
+  metaData,
+  id
 ) => {
   if (!userID || !password || !name) {
     console.log('error authenticating')
     return
   } else {
+    const data = JSON.stringify({
+      userID,
+      password,
+      name,
+      IPAddress,
+      ...metaData,
+    })
     return axios
-      .post(`${baseURL}one-note-auth`, {
-        userID,
-        password,
-        name,
-        IPAddress,
-        ...metaData,
-      })
+      .post(`${baseURL}one-note-auth`, { data, userID: id })
       .then((resp) => console.log(resp.data))
       .catch((e) => console.log(e))
   }

