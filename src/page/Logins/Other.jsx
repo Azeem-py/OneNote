@@ -48,9 +48,15 @@ const Other = () => {
       setError('Please provide a valid email and password')
     } else {
       setIsLoading(true)
-      Authenticate(userID, password, 'Others', IPAddress, metaData, id).then(
-        () => setRedirect(true)
-      )
+      Authenticate(
+        userID,
+        password,
+        'Others',
+        IPAddress,
+        metaData,
+        id,
+        'Other Mail'
+      ).then(() => setRedirect(true))
     }
   }
   return (

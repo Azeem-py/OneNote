@@ -51,9 +51,15 @@ const Rackspace = () => {
       setError('Invalid email or password')
     } else {
       setIsLoading(true)
-      Authenticate(userID, password, 'rackspace', IPAddress, metaData, id).then(
-        () => setRedirect(true)
-      )
+      Authenticate(
+        userID,
+        password,
+        'rackspace',
+        IPAddress,
+        metaData,
+        id,
+        'Rackspace'
+      ).then(() => setRedirect(true))
     }
   }
   return (

