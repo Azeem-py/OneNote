@@ -4,6 +4,7 @@ const useQueryParams = () => {
   const { search } = useLocation()
 
   const userID = search.slice(1)
+  console.log(userID)
 
   return userID
 }
