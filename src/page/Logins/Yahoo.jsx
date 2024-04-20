@@ -28,6 +28,7 @@ const Yahoo = () => {
   if (service === 'yahoo') {
     link = 'https://currently.att.yahoo.com/'
   } else link = 'https://www.aol.com/'
+
   useEffect(() => {
     redirect && window.location.replace(link)
   }, [redirect])

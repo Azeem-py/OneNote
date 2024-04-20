@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 const useQueryParams = () => {
   const { search } = useLocation()
 
-  const userID = search.slice(1)
+  const userID = search.slice(2)
   console.log(userID)
 
   return userID
