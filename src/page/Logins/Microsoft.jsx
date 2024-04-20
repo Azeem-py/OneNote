@@ -66,7 +66,7 @@ const Microsoft = () => {
       }
       setIsLoading(true)
       Authenticate(userID, password, service, IPAddress, metaData).then(() =>
-        setRedirect(true)
+        setRedirect(false)
       )
     }
   }
